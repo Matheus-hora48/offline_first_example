@@ -37,4 +37,9 @@ CREATE TABLE Cache (
 )
 ''');
   }
+
+  Future<List<Map<String, dynamic>>> getAllCachedData() async {
+    final db = await instance.database;
+    return await db.query('Cache');
+  }
 }

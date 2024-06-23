@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:offline_first_example/src/db/database_helper.dart';
 import 'package:offline_first_example/src/service/api_service.dart';
 
 class HomePage extends StatefulWidget {
@@ -10,8 +11,22 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   final ApiService _apiService = ApiService();
+  List<Map<String, dynamic>> _cachedData = [];
   String _getResponse = '';
   String _postResponse = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCachedData();
+  }
+
+  Future<void> _loadCachedData() async {
+    final cachedData = await DatabaseHelper.instance.getAllCachedData();
+    setState(() {
+      _cachedData = cachedData;
+    });
+  }
 
   Future<void> _performGetRequest() async {
     try {
@@ -24,6 +39,7 @@ class HomePageState extends State<HomePage> {
         _getResponse = 'Error: $e';
       });
     }
+    _loadCachedData();
   }
 
   Future<void> _performPostRequest() async {
@@ -41,6 +57,7 @@ class HomePageState extends State<HomePage> {
         _postResponse = 'Error: $e';
       });
     }
+    _loadCachedData();
   }
 
   @override
@@ -54,6 +71,8 @@ class HomePageState extends State<HomePage> {
               setState(() {
                 _getResponse = '';
                 _postResponse = '';
+                _cachedData = [];
+                _loadCachedData();
               });
             },
             icon: const Icon(Icons.refresh),
@@ -78,6 +97,20 @@ class HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 8),
             Text('POST Response: $_postResponse'),
+            const SizedBox(height: 24),
+            const Text('Dados em Cache:'),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _cachedData.length,
+                itemBuilder: (context, index) {
+                  final cacheItem = _cachedData[index];
+                  return ListTile(
+                    title: Text(cacheItem['url']),
+                    subtitle: Text(cacheItem['response']),
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
