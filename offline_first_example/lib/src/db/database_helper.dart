@@ -42,4 +42,13 @@ CREATE TABLE Cache (
     final db = await instance.database;
     return await db.query('Cache');
   }
+
+  Future<void> deleteCachedData(int id) async {
+    final db = await instance.database;
+    await db.delete(
+      'Cache',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
 }
