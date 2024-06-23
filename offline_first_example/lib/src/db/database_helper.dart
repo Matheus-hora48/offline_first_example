@@ -31,9 +31,10 @@ class DatabaseHelper {
 
     await db.execute('''
 CREATE TABLE Cache (
-  id $idType
+  id $idType,
   url $textType,
-  response $textType
+  data $textType,
+  method $textType
 )
 ''');
   }
@@ -41,6 +42,11 @@ CREATE TABLE Cache (
   Future<List<Map<String, dynamic>>> getAllCachedData() async {
     final db = await instance.database;
     return await db.query('Cache');
+  }
+
+  Future<int> insert(Map<String, dynamic> entity) async {
+    final db = await instance.database;
+    return await db.insert('Cache', entity);
   }
 
   Future<void> deleteCachedData(int id) async {

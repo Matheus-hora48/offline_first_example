@@ -97,6 +97,13 @@ class HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 8),
             Text('POST Response: $_postResponse'),
+            const SizedBox(
+              height: 8,
+            ),
+            ElevatedButton(
+              onPressed: _loadCachedData,
+              child: const Text('Buscar cache'),
+            ),
             const SizedBox(height: 24),
             const Text('Dados em Cache:'),
             Expanded(
@@ -106,7 +113,7 @@ class HomePageState extends State<HomePage> {
                   final cacheItem = _cachedData[index];
                   return ListTile(
                     title: Text(cacheItem['url']),
-                    subtitle: Text(cacheItem['response']),
+                    subtitle: Text(cacheItem['data']),
                   );
                 },
               ),

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:offline_first_example/src/service/cache_interceptor.dart';
 
 class ApiService {
   final Dio _dio;
@@ -6,9 +7,10 @@ class ApiService {
   ApiService()
       : _dio =
             Dio(BaseOptions(baseUrl: 'https://jsonplaceholder.typicode.com')) {
-    _dio.interceptors.add(
+    _dio.interceptors.addAll([
       LogInterceptor(requestBody: true, responseBody: true),
-    );
+      CacheInterceptor(dio: _dio),
+    ]);
   }
 
   Future<Map<String, dynamic>> getPost(int id) async {
